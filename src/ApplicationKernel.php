@@ -29,7 +29,7 @@ use Symfony\Component\DependencyInjection\Loader\ClosureLoader;
 /**
  * ApplicationKernel handles the dependencies and the core initialization
  */
-class ApplicationKernel implements HttpKernelInterface, TerminableInterface
+class ApplicationKernel implements KernelInterface, TerminableInterface
 {
 
 	protected $packages;
