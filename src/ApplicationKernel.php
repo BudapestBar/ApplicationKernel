@@ -218,6 +218,7 @@ class ApplicationKernel implements KernelInterface, TerminableInterface
         //    'kernel.bundles'         => $bundles,
             'kernel.charset'         => $this->getCharset(),
             'kernel.default_locale'  => 'en',
+            'router.resource'       => $this->rootDir.'/config/routing.yml'
         //    'kernel.container_class' => $this->getContainerClass(),
 
         );
