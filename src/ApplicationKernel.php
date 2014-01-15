@@ -180,6 +180,7 @@ class ApplicationKernel implements KernelInterface, TerminableInterface
 
         $loader->load('services.xml');
         $loader->load('web.xml');
+        $loader->load('routing.xml');
 
         $container->compile();
 
