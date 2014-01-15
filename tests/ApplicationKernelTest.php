@@ -51,20 +51,6 @@ class ApplicationKernelTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($kernel->getContainer());
     }
 
-    public function testRun()
-    {
-        $env = 'test_env';
-        $debug = true;
-        
-        $kernel = new KernelForTest($env, $debug);
-
-        $this->assertEquals($env, $kernel->getEnvironment());
-        $this->assertEquals($debug, $kernel->isDebug());
-        $this->assertFalse($kernel->isBooted());
-        $this->assertLessThanOrEqual(microtime(true), $kernel->getStartTime());
-        $this->assertNull($kernel->getContainer());
-    }
-
     public function testHandleCallsHandleOnHttpKernel()
     {
         $type = HttpKernelInterface::MASTER_REQUEST;
@@ -88,6 +74,9 @@ class ApplicationKernelTest extends \PHPUnit_Framework_TestCase
         $kernel->expects($this->once())
             ->method('getHttpKernel')
             ->will($this->returnValue($httpKernelMock));
+            
+
+        $kernel->setFixtures('prod', false);
 
         $kernel->handle($request, $type, $catch);
     }
@@ -117,6 +106,8 @@ class ApplicationKernelTest extends \PHPUnit_Framework_TestCase
         // required as this value is initialized
         // in the kernel constructor, which we don't call
         $kernel->setIsBooted(false);
+
+        $kernel->setFixtures('prod', false);
 
         $kernel->handle($request, $type, $catch);
     }

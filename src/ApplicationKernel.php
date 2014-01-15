@@ -6,6 +6,8 @@ namespace BudapestBar\Component\ApplicationKernel;
 use BudapestBar\Component\ApplicationKernel\DependencyInjection\MergeExtensionConfigurationPass;
 use BudapestBar\Component\ApplicationKernel\DependencyInjection\AddClassesToCachePass;
 
+
+
 use BudapestBar\Component\HttpKernel\HttpKernelInterface;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -28,6 +30,14 @@ use Symfony\Component\DependencyInjection\Loader\IniFileLoader;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 use Symfony\Component\DependencyInjection\Loader\ClosureLoader;
 
+use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
+
+
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
+use Symfony\Component\DependencyInjection\Scope;
+use BudapestBar\Component\ApplicationKernel\DependencyInjection\RegisterListenersPass;
+
 /**
  * ApplicationKernel handles the dependencies and the core initialization
  */
@@ -40,6 +50,7 @@ class ApplicationKernel implements KernelInterface, TerminableInterface
     protected $startTime;
     protected $booted = false;
     protected $container;
+    protected $rootDir;
 
 
     /**
@@ -55,6 +66,7 @@ class ApplicationKernel implements KernelInterface, TerminableInterface
 
         $this->environment = $environment;
         $this->debug = (Boolean) $debug;
+        $this->rootDir = $this->getRootDir();
 
         if ($this->debug) {
 
@@ -141,18 +153,35 @@ class ApplicationKernel implements KernelInterface, TerminableInterface
 
         return $this->container;
         
+    } 
+
+    public function getEnvironment() {
+
+        return $this->environment;
+        
+    }
+
+    public function isDebug() {
+
+        return $this->debug;
+        
     }
 
     public function initializeContainer() {
+
 
         $container = new ContainerBuilder(new ParameterBag($this->getKernelParameters()));
 
         $container->addObjectResource($this);
 
-        $this->registerContainerConfiguration($this->getContainerLoader($container)) {
+        $this->registerContainerConfiguration($this->getContainerLoader($container));
             
-            $container->merge($cont);
+        $loader = new XmlFileLoader($container, new FileLocator('/var/www/Work/Authentication/protected/Resources/Config'));
 
+        $loader->load('services.xml');
+        $loader->load('web.xml');
+
+        $container->addCompilerPass(new RegisterListenersPass(), PassConfig::TYPE_AFTER_REMOVING);
 
         $container->compile();
        
@@ -170,18 +199,24 @@ class ApplicationKernel implements KernelInterface, TerminableInterface
         return $this->debug ? $this->startTime : -INF;
     }
 
+    public function getCharset()
+    {
+        return 'UTF-8';
+    }
+
     protected function getKernelParameters()
     {
         
         return array(
-        //    'kernel.root_dir'        => $this->rootDir,
+            'kernel.root_dir'        => $this->rootDir,
             'kernel.environment'     => $this->environment,
             'kernel.debug'           => $this->debug,
         //    'kernel.name'            => $this->name,
         //    'kernel.cache_dir'       => $this->getCacheDir(),
         //    'kernel.logs_dir'        => $this->getLogDir(),
         //    'kernel.bundles'         => $bundles,
-        //    'kernel.charset'         => $this->getCharset(),
+            'kernel.charset'         => $this->getCharset(),
+            'kernel.default_locale'  => 'en',
         //    'kernel.container_class' => $this->getContainerClass(),
 
         );
@@ -206,6 +241,28 @@ class ApplicationKernel implements KernelInterface, TerminableInterface
         ));
 
         return new DelegatingLoader($resolver);
+    }
+
+    public function getRootDir()
+    {
+        if (null === $this->rootDir) {
+            $r = new \ReflectionObject($this);
+            $this->rootDir = str_replace('\\', '/', dirname($r->getFileName()));
+        }
+
+        return $this->rootDir;
+    }
+
+    public function serialize()
+    {
+        return serialize(array($this->environment, $this->debug));
+    }
+
+    public function unserialize($data)
+    {
+        list($environment, $debug) = unserialize($data);
+
+        $this->__construct($environment, $debug);
     }
 
 }

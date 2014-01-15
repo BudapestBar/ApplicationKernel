@@ -52,4 +52,18 @@ class KernelForTest extends ApplicationKernel
     {
         $this->booted = (Boolean) $value;
     }
+
+    public function setFixtures($environment, $debug) {
+
+        $this->environment = $environment;
+        $this->debug = (Boolean) $debug;
+        $this->rootDir = $this->getRootDir();
+
+        if ($this->debug) {
+
+            $this->startTime = microtime(true);
+        
+        }
+
+    }
 }
