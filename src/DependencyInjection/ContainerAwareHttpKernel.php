@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Component\HttpKernel\DependencyInjection;
+namespace BudapestBar\Component\ApplicationKernel\DependencyInjection;
 
 use BudapestBar\Component\HttpKernel\HttpKernelInterface;
 use BudapestBar\Component\HttpKernel\HttpKernel;

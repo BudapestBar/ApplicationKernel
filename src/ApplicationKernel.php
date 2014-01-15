@@ -181,9 +181,9 @@ class ApplicationKernel implements KernelInterface, TerminableInterface
         $loader->load('services.xml');
         $loader->load('web.xml');
 
-        $container->addCompilerPass(new RegisterListenersPass(), PassConfig::TYPE_AFTER_REMOVING);
-
         $container->compile();
+
+        $container->addCompilerPass(new RegisterListenersPass(), PassConfig::TYPE_AFTER_REMOVING);
        
         $this->container = $container;
 
