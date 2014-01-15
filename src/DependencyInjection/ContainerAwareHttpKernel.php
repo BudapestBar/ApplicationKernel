@@ -14,7 +14,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Scope;
 
-class ContainerAwareHttpKernelextends HttpKernel
+class ContainerAwareHttpKernel extends HttpKernel
 {
     protected $container;
 
