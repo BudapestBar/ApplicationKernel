@@ -14,7 +14,7 @@ namespace BudapestBar\Component\ApplicationKernel\DependencyInjection;
 use BudapestBar\Component\HttpKernel\HttpKernelInterface;
 use BudapestBar\Component\HttpKernel\HttpKernel;
 
-use BudapestBar\Component\ApplicationKernel\Controller\ControllerResolverInterface;
+use BudapestBar\Component\HttpKernel\Controller\ControllerResolverInterface;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
